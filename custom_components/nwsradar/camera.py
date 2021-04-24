@@ -1,4 +1,5 @@
 """Provide animated GIF loops of NWS radar imagery."""
+import functools
 import logging
 from datetime import timedelta
 
@@ -27,7 +28,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
             _LOGGER.debug("Updating radar info.")
             await radar_update.async_call()
             _LOGGER.debug("Updating layer info.")
-            await hass.async_add_executor_job(layer.update_image(num=6))
+            image_call = functools.partial(layer.update_image, num=6)
+            await hass.async_add_executor_job(image_call)
 
         return async_update_data
 
